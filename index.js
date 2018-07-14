@@ -11,7 +11,9 @@ module.exports = function(vorpal) {
       const command = args.command;
 
       if (command === "connect") {
-        rfxtrx = new rfxcom.RfxCom("COM3", { debug: true });
+        rfxtrx = new rfxcom.RfxCom("COM3", {
+          /* DEBUG debug: true */
+        });
 
         rfxtrx.on("connecting", function(evt) {
           console.log("[rfxcom] Connecting...");
@@ -31,6 +33,18 @@ module.exports = function(vorpal) {
 
         rfxtrx.initialise(() => {
           console.log("RFXtrx433 device initialized");
+        });
+
+        // DEBUG
+        // rfxtrx.on("receive", function(evt) {
+        //   console.log("[rfxcom] received", evt);
+        // });
+
+        rfxtrx.on("temperaturehumidity1", function(evt) {
+          const { id, temperature, humidity } = evt;
+          console.log(
+            `[rfxcom] Sensor ${id} said temperature is ${temperature}°C and humidity is ${humidity}%`
+          );
         });
 
         callback();
